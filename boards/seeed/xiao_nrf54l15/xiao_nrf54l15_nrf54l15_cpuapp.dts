@@ -85,14 +85,14 @@
 	status = "okay";
 };
 
-&uart00 {
-	current-speed = <115200>;
-	pinctrl-0 = <&uart00_default>;
-	pinctrl-1 = <&uart00_sleep>;
-	pinctrl-names = "default", "sleep";
-	status = "okay";
-	/delete-property/ hw-flow-control;
-};
+// &uart00 {
+// 	current-speed = <115200>;
+// 	pinctrl-0 = <&uart00_default>;
+// 	pinctrl-1 = <&uart00_sleep>;
+// 	pinctrl-names = "default", "sleep";
+// 	status = "okay";
+// 	/delete-property/ hw-flow-control;
+// };
 
 &uart21 {
 	current-speed = <115200>;
@@ -125,11 +125,12 @@
 		status = "okay";
 	};
 };
-&spi20 {
+&spi00 {
 	status = "okay";
-	pinctrl-0 = <&spi20_default>;
-	pinctrl-1 = <&spi20_sleep>;
+	pinctrl-0 = <&spi00_default>;
+	pinctrl-1 = <&spi00_sleep>;
 	pinctrl-names = "default", "sleep";
+	max-frequency = <32000000>;
 };
 
 // &spi22 {
@@ -137,6 +138,7 @@
 // 	pinctrl-0 = <&spi22_default>;
 // 	pinctrl-1 = <&spi22_sleep>;
 // 	pinctrl-names = "default", "sleep";
+//	max-frequency = <32000000>;
 // };
 
 &pdm20 {

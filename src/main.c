@@ -1,5 +1,6 @@
 #include <zephyr/kernel.h>
 #include <zephyr/shell/shell.h>
+#include <nrfx_power.h>
 #include "mic.h"
 #include "button.h"
 #include "adc.h"
@@ -7,6 +8,9 @@
 static int init_module(void)
 {
 	int ret;
+
+	nrfx_power_constlat_mode_request();
+	
 	ret = mic_init();
 	if (ret < 0)
 	{

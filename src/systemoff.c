@@ -1,6 +1,6 @@
 #include <inttypes.h>
 #include <stdio.h>
-
+#include <nrfx_power.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
@@ -35,7 +35,7 @@ static int cmd_sys_off(const struct shell *sh, size_t argc, char **argv)
         return 0;
     }
 
-    rc = gpio_pin_interrupt_configure_dt(&usr_btn, GPIO_INT_LEVEL_HIGH);
+    rc = gpio_pin_interrupt_configure_dt(&usr_btn, GPIO_INT_LEVEL_LOW);
     if (rc < 0)
     {
         shell_error(sh, "Could not configure usr_btn GPIO interrupt (%d)\n", rc);
@@ -50,6 +50,7 @@ static int cmd_sys_off(const struct shell *sh, size_t argc, char **argv)
         return 0;
     }
 #endif
+    nrfx_power_constlat_mode_free();
     sys_poweroff();
 
     return 0;

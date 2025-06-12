@@ -73,6 +73,7 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 		ret = dmic_read(dmic, 0, &buffer, &size, TIMEOUT_MS);
 		if (ret < 0) {
 			shell_error(sh, "DMIC read failed (%d)", ret);
+			k_mem_slab_free(&mem_slab, buffer);
 			return ret;
 		}
 
@@ -80,6 +81,7 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 		{
 			shell_print(sh, "%d", ((int16_t *)buffer)[j]);
 		}
+		k_mem_slab_free(&mem_slab, buffer);
 	}
 	ret = dmic_trigger(dmic, DMIC_TRIGGER_STOP);
 	if (ret < 0) {

@@ -31,7 +31,6 @@ static const struct gpio_dt_spec vbat_en_pin = GPIO_DT_SPEC_GET_OR(DT_NODELABEL(
 static int cmd_adc_get(const struct shell *sh, size_t argc, char **argv)
 {
 	int err;
-	uint32_t count = 0;
 	uint16_t buf;
 	struct adc_sequence sequence = {
 		.buffer = &buf,
@@ -61,12 +60,10 @@ static int cmd_adc_get(const struct shell *sh, size_t argc, char **argv)
 		}
 	}
 
-		shell_print(sh, "ADC reading[%u]:\n", count++);
 		for (size_t i = 0U; i < ARRAY_SIZE(adc_channels); i++) {
 			int32_t val_mv;
 
-			shell_print(sh, "- %s, channel %d: ",
-			       adc_channels[i].dev->name,
+			shell_print(sh, "channel %d: ",
 			       adc_channels[i].channel_id);
 
 			(void)adc_sequence_init_dt(&adc_channels[i], &sequence);
@@ -87,14 +84,14 @@ static int cmd_adc_get(const struct shell *sh, size_t argc, char **argv)
 			} else {
 				val_mv = (int32_t)buf;
 			}
-			shell_print(sh, "%"PRId32, val_mv);
+			shell_print(sh, "		raw:%"PRId32, val_mv);
 			err = adc_raw_to_millivolts_dt(&adc_channels[i],
 						       &val_mv);
 			/* conversion to mV may not be supported, skip if not */
 			if (err < 0) {
 				shell_error(sh, " (value in mV not available)\n");
 			} else {
-				shell_print(sh, " = %"PRId32" mV\n", val_mv);
+				shell_print(sh, "		vol = %"PRId32" mV\n", val_mv);
 			}
 		}
 

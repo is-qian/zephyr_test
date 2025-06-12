@@ -22,6 +22,7 @@ static int init_module(void)
 	{
 		printk("Failed to initialize battery module (%d)\n", ret);
 	}
+
 	return 0;
 }
 
@@ -31,6 +32,6 @@ int main(void)
 	{
 		return -1;
 	}
-        printf("please start test for %s\n", CONFIG_BOARD_TARGET);
-        return 0;
+	printf("please start test for %s\n", CONFIG_BOARD_TARGET);
+	return 0;
 }

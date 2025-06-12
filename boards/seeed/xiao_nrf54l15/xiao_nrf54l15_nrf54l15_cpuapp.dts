@@ -52,9 +52,9 @@
 		zephyr,code-partition = &slot0_partition;
 		zephyr,sram = &cpuapp_sram;
 		zephyr,flash = &cpuapp_rram;
-		zephyr,console = &uart21;
-		zephyr,shell-uart = &uart21;
-		nordic,rpc-uart = &uart21;
+		zephyr,console = &uart20;
+		zephyr,shell-uart = &uart20;
+		nordic,rpc-uart = &uart20;
 	};
 
 	aliases {

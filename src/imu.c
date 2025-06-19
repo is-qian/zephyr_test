@@ -18,6 +18,7 @@ static int cmd_imu_get(const struct shell *sh, size_t argc, char **argv)
     odr_attr.val2 = 0;
     gpio_pin_set_dt(&lsm6dso_en, 1);
 
+    k_sleep(K_MSEC(100));
     if (!device_is_ready(imu)) {
         shell_error(sh, "Device not ready\n");
         return -ENODEV;
@@ -36,7 +37,7 @@ static int cmd_imu_get(const struct shell *sh, size_t argc, char **argv)
         shell_error(sh, "Failed to set gyro sampling frequency\n");
         return ret;
     }
-
+    k_sleep(K_MSEC(500));
     ret = sensor_sample_fetch(imu);
     if (ret)
     {
@@ -59,8 +60,23 @@ static int cmd_imu_get(const struct shell *sh, size_t argc, char **argv)
     }
 
     gpio_pin_set_dt(&lsm6dso_en, 0);
-    shell_print(sh, "accel data: %d.%06d, %d.%06d, %d.%06d", accel_data[0].val1, accel_data[0].val2, accel_data[1].val1, accel_data[1].val2, accel_data[2].val1, accel_data[2].val2);
-    shell_print(sh, "gyro data: %d.%06d, %d.%06d, %d.%06d", gyro_data[0].val1, gyro_data[0].val2, gyro_data[1].val1, gyro_data[1].val2, gyro_data[2].val1, gyro_data[2].val2);
+    for (int i = 0; i < 3; i++) {
+        if (accel_data[i].val1 < 0 && accel_data[i].val2 > 0) {
+            accel_data[i].val2 = 1000000 - accel_data[i].val2;
+        }
+        if (gyro_data[i].val1 < 0 && gyro_data[i].val2 > 0) {
+            gyro_data[i].val2 = 1000000 - gyro_data[i].val2;
+        }
+    }
+    
+    shell_print(sh, "accel data: %d.%06u, %d.%06u, %d.%06u",
+              accel_data[0].val1, (uint32_t)abs(accel_data[0].val2),
+              accel_data[1].val1, (uint32_t)abs(accel_data[1].val2),
+              accel_data[2].val1, (uint32_t)abs(accel_data[2].val2));
+    shell_print(sh, "gyro data: %d.%06u, %d.%06u, %d.%06u",
+              gyro_data[0].val1, (uint32_t)abs(gyro_data[0].val2),
+              gyro_data[1].val1, (uint32_t)abs(gyro_data[1].val2),
+              gyro_data[2].val1, (uint32_t)abs(gyro_data[2].val2));
     return ret;
 }
 

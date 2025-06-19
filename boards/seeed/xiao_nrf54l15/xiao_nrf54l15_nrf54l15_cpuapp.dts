@@ -108,6 +108,7 @@
 	pinctrl-0 = <&i2c22_default>;
 	pinctrl-1 = <&i2c22_sleep>;
 	pinctrl-names = "default", "sleep";
+	clock-frequency = <400000>;
 };
 
 &i2c30 {
@@ -115,6 +116,7 @@
 	pinctrl-0 = <&i2c30_default>;
 	pinctrl-1 = <&i2c30_sleep>;
 	pinctrl-names = "default", "sleep";
+	clock-frequency = <400000>;
 
 	lsm6dso: lsm6dso@6a {
 		compatible = "st,lsm6dso";

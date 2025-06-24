@@ -11,7 +11,7 @@
 #define SAMPLE_RATE_HZ 16000
 #define SAMPLE_BITS    16
 #define TIMEOUT_MS     1000
-#define CAPTURE_MS     1000
+#define CAPTURE_MS     500
 #define BLOCK_SIZE     ((SAMPLE_BITS / BITS_PER_BYTE) * (SAMPLE_RATE_HZ * CAPTURE_MS) / 1000)
 #define BLOCK_COUNT    4
 

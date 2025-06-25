@@ -60,7 +60,7 @@ means Pin number 0 on PORT2, as used in the board's datasheets and manuals.
 +-------+-------------+------------------+
 
 The default configuration can be found in
-:zephyr_file:`boards/seeed/xiao_nrf54L15/xiao_nrf54L15_defconfig`
+:zephyr_file:`boards/seeed/xiao_nrf54l15/xiao_nrf54l15_nrf54l15_cpuapp_defconfig`
 
 
 Programming and Debugging

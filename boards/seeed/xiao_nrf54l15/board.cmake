@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
-board_runner_args(openocd "--cmd-load=nrf54l-load")
+if(CONFIG_SOC_NRF54L15_CPUAPP)
+	board_runner_args(openocd "--cmd-load=nrf54l-load")
+elseif(CONFIG_SOC_NRF54L15_CPUFLPR)
+  board_runner_args(openocd "--cmd-load=nrf54l-load" -c "targets nrf54l.aux")
+endif()
 include(${ZEPHYR_BASE}/boards/common/openocd.board.cmake)
 
 if(CONFIG_SOC_NRF54L15_CPUAPP)

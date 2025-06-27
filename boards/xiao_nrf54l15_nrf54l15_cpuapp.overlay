@@ -1,8 +1,8 @@
 / {
 	chosen {
-		zephyr,console = &uart20;
-		zephyr,shell-uart = &uart20;
-		nordic,rpc-uart = &uart20;
+		zephyr,console = &uart21;
+		zephyr,shell-uart = &uart21;
+		nordic,rpc-uart = &uart21;
 	};
 
 	zephyr,user {
@@ -11,10 +11,9 @@
 	};
 };
 
-&uart20 {
+&uart21 {
  	current-speed = <921600>;
 };
-
-&uart21 {
+&uart20 {
 	status = "disabled";
 };

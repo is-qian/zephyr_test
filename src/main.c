@@ -39,5 +39,11 @@ int main(void)
 		return -1;
 	}
 	printf("please start test for %s\n", CONFIG_BOARD_TARGET);
+	
+	while (1)
+	{
+		shell_execute_cmd(NULL, "button check");
+		k_sleep(K_MSEC(100));
+	}
 	return 0;
 }

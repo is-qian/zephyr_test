@@ -40,14 +40,13 @@ static int cmd_buttons_check(const struct shell *sh, size_t argc, char **argv)
 		if (ret == -EAGAIN) {
 			shell_error(sh, "No input received");
 			return 0;
-
 		}
 
 		switch (evt.code) {
 		case INPUT_KEY_ENTER:
 			if (evt.value == 1) {
 				shell_print(sh, "usr button pressed");
-
+				shell_execute_cmd(sh, "sys off");
 			} else {
 				shell_print(sh, "usr button released");
 			}

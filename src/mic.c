@@ -50,6 +50,7 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 	int ret,time = 1;
 	void *buffer;
 	uint32_t size;
+	int16_t max_data = 0, min_data = 0;
 	
 	if (argc > 1) {
 		time = atoi(argv[1]);
@@ -83,6 +84,12 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 
 		for (int j = 0; j < size / sizeof(int16_t); j++)
 		{
+			if (((int16_t *)buffer)[j] > max_data) {
+				max_data = ((int16_t *)buffer)[j];
+			}
+			if (((int16_t *)buffer)[j] < min_data) {
+				min_data = ((int16_t *)buffer)[j];
+			}
 			shell_print(sh, "%d", ((int16_t *)buffer)[j]);
 		}
 		k_mem_slab_free(&mem_slab, buffer);
@@ -94,6 +101,7 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 		return ret;
 	}
 	shell_print(sh, "E");
+	shell_print(sh, "audio data Max: %d Min: %d", max_data, min_data);
 	regulator_disable(pdm_reg);
 	return 0;
 }

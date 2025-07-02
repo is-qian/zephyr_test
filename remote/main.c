@@ -13,11 +13,10 @@ int main(void)
 {
 	printk("Hello world from %s\n", CONFIG_BOARD_TARGET);
 	gpio_pin_configure_dt(&led0, GPIO_OUTPUT_ACTIVE | GPIO_OUTPUT_HIGH);
-	for (int i = 0; i < 60; i++){
+	while(1) {
 		gpio_pin_toggle_dt(&led0);
-		k_sleep(K_MSEC(1000));
+		k_sleep(K_MSEC(500));
 	}
 	gpio_pin_set_dt(&led0, 1);
-	while (1);
 	return 0;
 }

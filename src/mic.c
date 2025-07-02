@@ -16,6 +16,7 @@
 #define BLOCK_COUNT    4
 
 static const struct device *const dmic = DEVICE_DT_GET(DT_ALIAS(dmic20));
+static const struct device *const  pdm_reg = DEVICE_DT_GET(DT_NODELABEL(pdm_imu_pwr));
 
 K_MEM_SLAB_DEFINE_STATIC(mem_slab, BLOCK_SIZE, BLOCK_COUNT, 4);
 
@@ -58,6 +59,7 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 		shell_error(sh, "Microphone module not initialized");
 		return -EPERM;
 	}
+	regulator_enable(pdm_reg);
 	shell_print(sh, "S");
 	ret = dmic_configure(dmic, &cfg);
 	if (ret < 0) {
@@ -74,6 +76,8 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 		if (ret < 0) {
 			shell_error(sh, "DMIC read failed (%d)", ret);
 			k_mem_slab_free(&mem_slab, buffer);
+			dmic_trigger(dmic, DMIC_TRIGGER_STOP);
+			regulator_disable(pdm_reg);
 			return ret;
 		}
 
@@ -86,9 +90,11 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 	ret = dmic_trigger(dmic, DMIC_TRIGGER_STOP);
 	if (ret < 0) {
 		shell_error(sh, "STOP trigger failed (%d)", ret);
+		regulator_disable(pdm_reg);
 		return ret;
 	}
 	shell_print(sh, "E");
+	regulator_disable(pdm_reg);
 	return 0;
 }
 

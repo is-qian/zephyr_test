@@ -10,6 +10,32 @@
 	model = "Seeed XIAO nRF54L15";
 	compatible = "seeed,xiao-nrf54l15-cpuapp";
 
+	pdm_imu_pwr: pdm-imu-pwr {
+		compatible = "regulator-fixed";
+		regulator-name = "pdm-imu-pwr";
+		enable-gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
+		regulator-boot-on;
+		startup-delay-us = <5000>;
+	};
+
+	rfsw_ctl: rfsw-ctl {
+		compatible = "regulator-fixed";
+		regulator-name = "rfsw-ctl";
+		enable-gpios = <&gpio2 5 GPIO_ACTIVE_HIGH>;
+	};
+
+	rfsw_pwr: rfsw-pwr {
+		compatible = "regulator-fixed";
+		regulator-name = "rfsw-pwr";
+		enable-gpios = <&gpio2 3 GPIO_ACTIVE_HIGH>;
+	};
+
+	vbat_pwr: vbat-pwr {
+		compatible = "regulator-fixed";
+		regulator-name = "vbat";
+		enable-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+	};
+
 	chosen {
 		zephyr,code-partition = &slot0_partition;
 		zephyr,sram = &cpuapp_sram;
@@ -17,6 +43,10 @@
 		zephyr,console = &uart20;
 		zephyr,shell-uart = &uart20;
 		nordic,rpc-uart = &uart20;
+	};
+
+	aliases {
+		imu0 = &lsm6dso;
 	};
 };
 
@@ -49,10 +79,15 @@
 
 &i2c30 {
 	status = "okay";
-};
 
-&lsm6dso {
-	status = "okay";
+	lsm6dso: lsm6dso@6a {
+		compatible = "st,lsm6dso";
+		reg = <0x6a>;
+		irq-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+		accel-pm = <LSM6DSO_DT_XL_ULP_MODE>;
+		gyro-pm = <LSM6DSO_DT_GY_NORMAL_MODE>;
+		status = "okay";
+	};
 };
 
 &spi00 {

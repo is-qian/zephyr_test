@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 if(CONFIG_SOC_NRF54L15_CPUAPP)
-	board_runner_args(openocd "--cmd-load=nrf54l-load")
+	board_runner_args(openocd "--cmd-load=nrf54l-load" -c "targets nrf54l.cpu")
 elseif(CONFIG_SOC_NRF54L15_CPUFLPR)
   board_runner_args(openocd "--cmd-load=nrf54l-load" -c "targets nrf54l.aux")
 endif()

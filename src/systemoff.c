@@ -10,7 +10,6 @@
 #include <zephyr/shell/shell.h>
 #include <zephyr/drivers/wifi/nrf_wifi/bus/rpu_hw_if.h>
 static const struct gpio_dt_spec usr_btn = GPIO_DT_SPEC_GET_OR(DT_NODELABEL(usr_btn), gpios, {0});
-static const struct gpio_dt_spec rfsw_en = GPIO_DT_SPEC_GET_OR(DT_NODELABEL(rfsw_en_pin), gpios, {0});
 static int cmd_sys_off(const struct shell *sh, size_t argc, char **argv)
 {
     int rc;
@@ -25,7 +24,6 @@ static int cmd_sys_off(const struct shell *sh, size_t argc, char **argv)
 #endif
 
     shell_print(sh, "\n%s system off demo\n", CONFIG_BOARD);
-    gpio_pin_set_dt(&rfsw_en, 0);
     /* configure usr_btn as input, interrupt as level active to allow wake-up */
     shell_print(sh, "Entering system off; press usr_btn to restart\n");
     rc = gpio_pin_configure_dt(&usr_btn, GPIO_INPUT);

@@ -1,11 +1,10 @@
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/shell/shell.h>
-#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/regulator.h>
 #include <nrfx.h>
-#include <zephyr/dt-bindings/gpio/nordic-nrf-gpio.h>
 
 static const struct device *const imu = DEVICE_DT_GET(DT_NODELABEL(lsm6dso));
-static const struct gpio_dt_spec lsm6dso_en = GPIO_DT_SPEC_GET_OR(DT_NODELABEL(pdm_imu_en_pin), gpios, {0});
+static const struct device *const  lsm6dso_reg = DEVICE_DT_GET(DT_NODELABEL(pdm_imu_pwr));
 
 static int cmd_imu_get(const struct shell *sh, size_t argc, char **argv)
 {
@@ -16,7 +15,7 @@ static int cmd_imu_get(const struct shell *sh, size_t argc, char **argv)
     /* set accel/gyro sampling frequency to 12.5 Hz */
     odr_attr.val1 = 12.5;
     odr_attr.val2 = 0;
-    gpio_pin_set_dt(&lsm6dso_en, 1);
+    regulator_enable(lsm6dso_reg);
 
     k_sleep(K_MSEC(100));
     if (!device_is_ready(imu)) {
@@ -59,7 +58,7 @@ static int cmd_imu_get(const struct shell *sh, size_t argc, char **argv)
         return ret;
     }
 
-    gpio_pin_set_dt(&lsm6dso_en, 0);
+    regulator_disable(lsm6dso_reg);
     for (int i = 0; i < 3; i++) {
         if (accel_data[i].val1 < 0 && accel_data[i].val2 > 0) {
             accel_data[i].val2 = 1000000 - accel_data[i].val2;
@@ -91,28 +90,6 @@ int imu_init(void)
 	if (!device_is_ready(imu)) {
 		return -ENODEV;
 	}
-    gpio_pin_set_dt(&lsm6dso_en, 0);
+    regulator_disable(lsm6dso_reg);
 	return 0;
 }
-
-static int imu_poweron(void)
-{
-    int ret;
-
-    ret = gpio_pin_configure_dt(&lsm6dso_en, (GPIO_OUTPUT | NRF_GPIO_DRIVE_S0H1));
-    if (ret < 0)
-    {
-        return ret;
-    }
-
-    ret = gpio_pin_set_dt(&lsm6dso_en, 1);
-    if (ret < 0)
-    {
-        return ret;
-    }
-    k_sleep(K_MSEC(50));
-
-    return 0;
-}
-
-SYS_INIT(imu_poweron, POST_KERNEL, 89);

@@ -25,36 +25,12 @@
 		};
 	};
 
-	pdm_imu_en_pin: pdm_imu_en_pin {
-		compatible = "nordic,gpio-pins";
-		gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
-		status = "okay";
-	};
-
-	rfsw_ctl_pin: rfsw-ctl {
-		compatible = "nordic,gpio-pins";
-		gpios = <&gpio2 5 GPIO_ACTIVE_HIGH>;
-		status = "okay";
-	};
-
-	rfsw_en_pin: rfsw-en {
-		compatible = "nordic,gpio-pins";
-		gpios = <&gpio2 3 GPIO_ACTIVE_HIGH>;
-		status = "okay";
-	};
-
-	vbat_en_pin: vbat-en {
-		compatible = "nordic,gpio-pins";
-		gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
-		status = "okay";
-	};
-
 	aliases {
 		led0 = &led0;
 		buttons = &buttons;
-		imu0 = &lsm6dso;
 		dmic20 = &pdm20;
 		sw0 = &usr_btn;
+		watchdog0 = &wdt31;
 	};
 };
 
@@ -84,28 +60,18 @@
 	pinctrl-1 = <&i2c30_sleep>;
 	pinctrl-names = "default", "sleep";
 	clock-frequency = <400000>;
-
-	lsm6dso: lsm6dso@6a {
-		compatible = "st,lsm6dso";
-		reg = <0x6a>;
-		irq-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
-		accel-pm = <LSM6DSO_DT_XL_ULP_MODE>;
-		gyro-pm = <LSM6DSO_DT_GY_NORMAL_MODE>;
-	};
 };
 
 &spi00 {
 	pinctrl-0 = <&spi00_default>;
 	pinctrl-1 = <&spi00_sleep>;
 	pinctrl-names = "default", "sleep";
-	max-frequency = <32000000>;
 };
 
 &spi22 {
 	pinctrl-0 = <&spi22_default>;
 	pinctrl-1 = <&spi22_sleep>;
 	pinctrl-names = "default", "sleep";
-	max-frequency = <32000000>;
 };
 
 &pdm20 {

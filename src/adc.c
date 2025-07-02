@@ -3,9 +3,8 @@
 #include <stdint.h>
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
-#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/regulator.h>
 #include <zephyr/drivers/adc.h>
-#include <zephyr/dt-bindings/gpio/nordic-nrf-gpio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/shell/shell.h>
 #include "adc.h"
@@ -26,7 +25,7 @@ static const struct adc_dt_spec adc_channels[] = {
 			     DT_SPEC_AND_COMMA)
 };
 
-static const struct gpio_dt_spec vbat_en_pin = GPIO_DT_SPEC_GET_OR(DT_NODELABEL(vbat_en_pin), gpios, {0});
+static const struct device *const  vbat_reg = DEVICE_DT_GET(DT_NODELABEL(vbat_pwr));
 
 static int cmd_adc_get(const struct shell *sh, size_t argc, char **argv)
 {
@@ -38,13 +37,7 @@ static int cmd_adc_get(const struct shell *sh, size_t argc, char **argv)
 		.buffer_size = sizeof(buf),
 	};
 
-    err = gpio_pin_configure_dt(&vbat_en_pin, GPIO_OUTPUT | NRF_GPIO_DRIVE_S0H1);
-    if (err < 0)
-    {
-        shell_error(sh, "Failed to configure enable pin (%d)", err);
-        return err;
-    }
-    gpio_pin_set(vbat_en_pin.port, vbat_en_pin.pin, 1);
+	regulator_disable(vbat_reg);
 
 	/* Configure channels individually prior to sampling. */
 	for (size_t i = 0U; i < ARRAY_SIZE(adc_channels); i++) {
@@ -95,20 +88,20 @@ static int cmd_adc_get(const struct shell *sh, size_t argc, char **argv)
 			}
 		}
 
-    gpio_pin_configure_dt(&vbat_en_pin, GPIO_INPUT);
+	regulator_disable(vbat_reg);
     return 0;
 }
 
 int adc_init(void)
 { 
     int err;
-    err = gpio_pin_configure_dt(&vbat_en_pin, GPIO_INPUT);
+    err = regulator_disable(vbat_reg);
     if (err < 0)
     {
         LOG_ERR("Failed to configure enable pin (%d)", err);
         return err;
     }
-    
+
     return 0;
 }
 

@@ -11,9 +11,9 @@
 	};
 };
 
-&uart21 {
- 	current-speed = <921600>;
-};
+// &uart21 {
+//  	current-speed = <921600>;
+// };
 &uart20 {
 	status = "disabled";
 };

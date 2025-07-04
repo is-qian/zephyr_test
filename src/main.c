@@ -1,10 +1,12 @@
 #include <zephyr/kernel.h>
 #include <zephyr/shell/shell.h>
 #include <nrfx_power.h>
+#include <zephyr/sys/poweroff.h>
 #include "mic.h"
 #include "button.h"
 #include "adc.h"
 #include "imu.h"
+#include "systemoff.h"
 
 static int init_module(void)
 {
@@ -42,7 +44,7 @@ int main(void)
 	
 	while (1)
 	{
-		shell_execute_cmd(NULL, "button check");
+		// shell_execute_cmd(NULL, "button check");
 		k_sleep(K_MSEC(100));
 	}
 	return 0;

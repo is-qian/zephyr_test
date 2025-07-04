@@ -46,9 +46,11 @@ static int cmd_buttons_check(const struct shell *sh, size_t argc, char **argv)
 		case INPUT_KEY_ENTER:
 			if (evt.value == 1) {
 				shell_print(sh, "usr button pressed");
-				shell_execute_cmd(sh, "sys off");
+				// shell_execute_cmd(sh, "sys off");
 			} else {
 				shell_print(sh, "usr button released");
+				pm_device_runtime_put(buttons);
+				return 0;
 			}
 			break;
 		}

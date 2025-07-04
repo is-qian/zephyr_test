@@ -5,10 +5,12 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/pm/device.h>
-#include <zephyr/sys/poweroff.h>
 #include <zephyr/sys/util.h>
 #include <zephyr/shell/shell.h>
 #include <zephyr/drivers/wifi/nrf_wifi/bus/rpu_hw_if.h>
+#include "systemoff.h"
+
+bool sys_off_flag = false;
 // static const struct gpio_dt_spec usr_btn = GPIO_DT_SPEC_GET_OR(DT_NODELABEL(usr_btn), gpios, {0});
 static int cmd_sys_off(const struct shell *sh, size_t argc, char **argv)
 {
@@ -50,8 +52,7 @@ static int cmd_sys_off(const struct shell *sh, size_t argc, char **argv)
 #endif
     irq_lock();
     nrfx_power_constlat_mode_free();
-    sys_poweroff();
-
+    sys_off_flag = true;
     return 0;
 }
 

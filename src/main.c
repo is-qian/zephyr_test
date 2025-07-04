@@ -46,6 +46,10 @@ int main(void)
 	{
 		// shell_execute_cmd(NULL, "button check");
 		k_sleep(K_MSEC(100));
+		if(sys_off_flag == true)
+		{
+			sys_poweroff();
+		}
 	}
 	return 0;
 }

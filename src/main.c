@@ -44,7 +44,7 @@ int main(void)
 	
 	while (1)
 	{
-		// shell_execute_cmd(NULL, "button check");
+		shell_execute_cmd(NULL, "button check");
 		k_sleep(K_MSEC(100));
 		if(sys_off_flag == true)
 		{

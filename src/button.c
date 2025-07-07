@@ -38,17 +38,17 @@ static int cmd_buttons_check(const struct shell *sh, size_t argc, char **argv)
 
 		ret = k_msgq_get(&input_button, &evt, K_SECONDS(5));
 		if (ret == -EAGAIN) {
-			shell_error(sh, "No input received");
+			// shell_error(sh, "No input received");
 			return 0;
 		}
 
 		switch (evt.code) {
 		case INPUT_KEY_ENTER:
 			if (evt.value == 1) {
-				shell_print(sh, "usr button pressed");
+				printf("usr button pressed\n");
 				// shell_execute_cmd(sh, "sys off");
 			} else {
-				shell_print(sh, "usr button released");
+				printf("usr button released\n");
 				pm_device_runtime_put(buttons);
 				return 0;
 			}

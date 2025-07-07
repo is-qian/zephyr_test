@@ -50,10 +50,16 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 	int ret,time = 1;
 	void *buffer;
 	uint32_t size;
-	int16_t max_data = 0, min_data = 0;
+	int16_t max_data = 0, min_data = 0, max_consecutive = 0;
+	bool is_print = true;
 	
 	if (argc > 1) {
 		time = atoi(argv[1]);
+		// if time is 0, then do not print the data
+		if (time < 1) {
+			is_print = false;
+			time = 1;
+		}
 	}
 	time *= (1000 / CAPTURE_MS);
 	if (!initialized) {
@@ -82,15 +88,31 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 			return ret;
 		}
 
-		for (int j = 0; j < size / sizeof(int16_t); j++)
-		{
-			if (((int16_t *)buffer)[j] > max_data) {
-				max_data = ((int16_t *)buffer)[j];
-			}
-			if (((int16_t *)buffer)[j] < min_data) {
-				min_data = ((int16_t *)buffer)[j];
-			}
-			shell_print(sh, "%d", ((int16_t *)buffer)[j]);
+        int16_t *pdata = (int16_t *)buffer;
+        int consecutive = 1;
+        int max_consecutive_local = 1;
+        for (int j = 0; j < size / sizeof(int16_t); j++)
+        {
+            if(j > 100)
+            {
+                if (pdata[j] > max_data) {
+                    max_data = pdata[j];
+                }
+                if (pdata[j] < min_data) {
+                    min_data = pdata[j];
+                }
+            }
+            // 计算连续不变的值最大持续长度
+            if (j > 0 && pdata[j] == pdata[j-1]) {
+                consecutive++;
+                if (consecutive > max_consecutive_local) {
+                    max_consecutive_local = consecutive;
+                }
+            } else {
+                consecutive = 1;
+            }
+            if (is_print)
+                shell_print(sh, "%d", pdata[j]);
 		}
 		k_mem_slab_free(&mem_slab, buffer);
 	}
@@ -101,7 +123,7 @@ static int cmd_mic_capture(const struct shell *sh, size_t argc, char **argv)
 		return ret;
 	}
 	shell_print(sh, "E");
-	shell_print(sh, "audio data Max: %d Min: %d", max_data, min_data);
+	shell_print(sh, "audio data Max: %d Min: %d Max consecutive: %d", max_data, min_data, max_consecutive);
 	regulator_disable(pdm_reg);
 	return 0;
 }

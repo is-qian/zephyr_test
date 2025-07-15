@@ -7,5 +7,5 @@
 
 &uart20 {
 	// current-speed = <921600>;
-	status = "okay";
+	// status = "okay";
 };

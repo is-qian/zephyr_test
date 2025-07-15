@@ -18,7 +18,6 @@
 				"CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
 				"CMAKE_BUILD_TYPE": "Debug",
 				"BOARD": "seeed/xiao_nrf54l15/cpuapp",
-				"SNIPPET": "nordic-flpr",
 				"CACHED_CONF_FILE": "${sourceDir}/prj.conf",
 				"CONF_FILE": "${sourceDir}/prj.conf"
             }

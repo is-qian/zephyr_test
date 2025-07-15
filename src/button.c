@@ -36,7 +36,7 @@ static int cmd_buttons_check(const struct shell *sh, size_t argc, char **argv)
 		int ret;
 		struct input_event evt;
 
-		ret = k_msgq_get(&input_button, &evt, K_SECONDS(5));
+		ret = k_msgq_get(&input_button, &evt, K_MSEC(500));
 		if (ret == -EAGAIN) {
 			// shell_error(sh, "No input received");
 			return 0;
